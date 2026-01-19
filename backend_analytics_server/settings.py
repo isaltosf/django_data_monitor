@@ -28,12 +28,19 @@ SECRET_KEY = "django-insecure-&hwbr%j#du-pn)z%s@+t+xl_)%382r!uzji%80b6t9r)=(4jpa
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+ALLOWED_HOSTS = [".up.railway.app", "localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = [
     "https://*.up.railway.app",
+    "https://*.app.github.dev",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
-
-ALLOWED_HOSTS = [".up.railway.app"]
+# Necesario para Railway (balanceador de carga)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 API_URL = "https://jsonplaceholder.typicode.com/posts"
 # Application definition
@@ -76,15 +83,7 @@ TEMPLATES = [
     },
 ]
 ...
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.app.github.dev",  # Solo si utiliza Codespaces
-    "https://localhost:8000",
-    "http://127.0.0.1:8000",
-]
-
-ALLOWED_HOSTS = [
-    "*",
-]
+# Consolidado arriba
 
 
 WSGI_APPLICATION = "backend_analytics_server.wsgi.application"
