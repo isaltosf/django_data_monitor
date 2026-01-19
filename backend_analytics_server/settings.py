@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import pymysql
 
+pymysql.install_as_MySQLdb()
 pymysql.version_info = (2, 2, 1, "final", 0)
 pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,9 +28,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-&hwbr%j#du-pn)z%s@+t+xl_)%382r!uzji%80b6t9r)=(4jpa"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.up.railway.app",
+]
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [".up.railway.app"]
 
 API_URL = "https://jsonplaceholder.typicode.com/posts"
 # Application definition
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Agregar WhiteNoise al middleware (debe ir después de SecurityMiddleware)
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -91,11 +97,11 @@ WSGI_APPLICATION = "backend_analytics_server.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get("MYSQLDATABASE", "security"),
-        "USER": os.environ.get("MYSQLUSER", "root"),
-        "PASSWORD": os.environ.get("MYSQLPASSWORD", "admin"),
-        "HOST": os.environ.get("MYSQLHOST", "127.0.0.1"),
-        "PORT": os.environ.get("MYSQLPORT", "3306"),
+        "NAME": os.environ.get("MYSQLDATABASE"),
+        "USER": os.environ.get("MYSQLUSER"),
+        "PASSWORD": os.environ.get("MYSQLPASSWORD"),
+        "HOST": os.environ.get("MYSQLHOST"),
+        "PORT": os.environ.get("MYSQLPORT"),
     }
 }
 
@@ -135,9 +141,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = BASE_DIR / "assets"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Fallo: acceso sin autenticación
 LOGIN_URL = "/login/"
 
